@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "rsa",
+      "type": "pt.isec.pdrestapi.security.RsaKeyProperties",
+      "sourceType": "pt.isec.pdrestapi.security.RsaKeyProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "rsa.private-key",
+      "type": "java.security.interfaces.RSAPrivateKey",
+      "sourceType": "pt.isec.pdrestapi.security.RsaKeyProperties"
+    },
+    {
+      "name": "rsa.public-key",
+      "type": "java.security.interfaces.RSAPublicKey",
+      "sourceType": "pt.isec.pdrestapi.security.RsaKeyProperties"
+    }
+  ],
+  "hints": []
+}
