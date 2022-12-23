@@ -68,21 +68,37 @@ public class UtilizadoresController {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Para executar esta ação tem de ser um admin");
         }
 
-        jdbcTemplate.execute("INSERT INTO utilizador (" +
-                "                           username," +
-                "                           nome," +
-                "                           password," +
-                "                           administrador," +
-                "                           autenticado" +
-                "                       )" +
-                "                       VALUES (" +
-                "                          '"+ utilizador.getUsername() +"'," +
-                "                           '"+ utilizador.getNome() +"'," +
-                "                          '"+ utilizador.getPassword() +"'," +
-                "                           '"+ utilizador.getAdministrador() +"'," +
-                "                           '"+ 0 +"');");
+        List<Utilizador> checkUser = jdbcTemplate.query(("SELECT * FROM utilizador WHERE username='" + utilizador.getUsername()) + "'",
+                (resultSet, rowNum) -> new Utilizador(
+                        resultSet.getInt("id"),
+                        resultSet.getString("username"),
+                        resultSet.getString("nome"),
+                        resultSet.getString("password"),
+                        resultSet.getInt("administrador"),
+                        resultSet.getInt("autenticado")
+                ));
 
-        return ResponseEntity.ok(utilizador.toString());
+        if (checkUser.isEmpty()) {
+            jdbcTemplate.execute("INSERT INTO utilizador (" +
+                    "                           username," +
+                    "                           nome," +
+                    "                           password," +
+                    "                           administrador," +
+                    "                           autenticado" +
+                    "                       )" +
+                    "                       VALUES (" +
+                    "                          '"+ utilizador.getUsername() +"'," +
+                    "                           '"+ utilizador.getNome() +"'," +
+                    "                          '"+ utilizador.getPassword() +"'," +
+                    "                           '"+ utilizador.getAdministrador() +"'," +
+                    "                           '"+ 0 +"');");
+
+            return ResponseEntity.ok(utilizador.toString());
+
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("O utilizador com esse username já existe\n" +
+                "Use /utilizadores para ver os utilizador");
     }
 
     @PostMapping("{type}")
@@ -102,9 +118,24 @@ public class UtilizadoresController {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Para executar esta ação tem de ser um admin");
         }
 
+        List<Utilizador> removeUser = jdbcTemplate.query(("SELECT * FROM utilizador WHERE id='" + id + "'"),
+                (resultSet, rowNum) -> new Utilizador(
+                        resultSet.getInt("id"),
+                        resultSet.getString("username"),
+                        resultSet.getString("nome"),
+                        resultSet.getString("password"),
+                        resultSet.getInt("administrador"),
+                        resultSet.getInt("autenticado")
+                ));
+
+        if (removeUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("O utilizador com esse id não existe\n" +
+                    "Use /utilizadores para ver os utilizador que quer remover");
+        }
+
         jdbcTemplate.execute("DELETE FROM utilizador" +
                 " WHERE id = '" + id + "';");
 
-        return ResponseEntity.ok("removido");
+        return ResponseEntity.ok("Removido com sucesso\n" + removeUser.get(0));
     }
 }
