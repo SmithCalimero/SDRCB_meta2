@@ -24,17 +24,8 @@ public class EspestaculosController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @GetMapping("{type}")
-    public ResponseEntity getText(@PathVariable("type") String lang,Principal principal)
-    {
-        List<Utilizador> utilizadores = jdbcTemplate.query("SELECT * FROM utilizador",
-                (resultSet, rowNum) -> new Utilizador(resultSet.getString("nome")));
-        //return getResponseEntity(lang, principal);
-        return ResponseEntity.ok(utilizadores.toString());
-    }
-
     @GetMapping
-    public ResponseEntity getShows(@RequestParam(value="data-inicio", required=false) String dataInicio,@RequestParam(value="data-fim", required=false) String dataFim,Principal principal)
+    public ResponseEntity getShows(@RequestParam(value="data-inicio", required=false) String dataInicio,@RequestParam(value="data-fim", required=false) String dataFim)
     {
         if (dataInicio == null && dataFim == null) {
             List<Espetaculo> espetaculos = jdbcTemplate.query("SELECT * FROM espetaculo",
