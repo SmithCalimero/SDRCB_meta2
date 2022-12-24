@@ -35,7 +35,7 @@ public class UtilizadoresController {
                 ));
 
         if (admin.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Para executar esta ação tem de ser um admin");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Para executar esta ação tem de ser um admin");
         }
 
         List<Utilizador> utilizador = jdbcTemplate.query("SELECT * FROM utilizador",
@@ -65,7 +65,7 @@ public class UtilizadoresController {
                 ));
 
         if (admin.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Para executar esta ação tem de ser um admin");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Para executar esta ação tem de ser um admin");
         }
 
         List<Utilizador> checkUser = jdbcTemplate.query(("SELECT * FROM utilizador WHERE username='" + utilizador.getUsername()) + "'",
@@ -115,7 +115,7 @@ public class UtilizadoresController {
                 ));
 
         if (admin.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Para executar esta ação tem de ser um admin");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Para executar esta ação tem de ser um admin");
         }
 
         List<Utilizador> removeUser = jdbcTemplate.query(("SELECT * FROM utilizador WHERE id='" + id + "'"),
