@@ -7,7 +7,7 @@ module fxml {
     requires org.kordamp.bootstrapfx.core;
     requires java.desktop;
     requires java.sql;
-    requires org.xerial.sqlitejdbc;
+    requires java.rmi;
 
 
     opens pt.isec.pd.client.gui.view to javafx.fxml;
@@ -15,4 +15,6 @@ module fxml {
     exports pt.isec.pd.client.model;
     exports pt.isec.pd.client.gui;
     exports pt.isec.pd.shared_data;
+    exports pt.isec.pd.server.rmi to java.rmi;
+    exports pt.isec.pd.client.rmi to java.rmi;
 }

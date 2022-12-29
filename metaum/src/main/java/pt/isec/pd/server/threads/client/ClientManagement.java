@@ -22,6 +22,7 @@ public class ClientManagement extends Thread {
     private final Log LOG = Log.getLogger(Server.class);
     private ServerSocket serverSocket;
     private ClientPingHandler pingHandler;
+    private int portUdp;
     private boolean isConnected = true;             // validate if the user is connected
     private DBHandler dbHandler;
     private Integer numConnections = 0;
@@ -34,10 +35,11 @@ public class ClientManagement extends Thread {
             this.hbController = hbController;
             this.serverSocket = new ServerSocket(0);
             this.pingHandler = new ClientPingHandler(pingPort, hbList);
+            this.portUdp = pingPort;
             this.dbHandler = dataBaseHandler;
             this.clientsThread = new ArrayList<>();
             this.viewingSeats = new ArrayList<>();
-            hbList.add(new HeartBeat(serverSocket.getLocalPort(), true, dbHandler.getCurrentVersion(), 0, ip));
+            hbList.add(new HeartBeat(serverSocket.getLocalPort(),pingPort,true, dbHandler.getCurrentVersion(),0, ip));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -81,6 +83,8 @@ public class ClientManagement extends Thread {
     public int getServerPort() {
         return serverSocket.getLocalPort();
     }
+
+    public int getPortUdp() { return portUdp; }
 
     public int getNumConnections() {
         return numConnections;

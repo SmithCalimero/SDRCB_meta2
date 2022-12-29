@@ -9,29 +9,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc57de72-392a-4133-a259-d5e3329cc8f8" name="Changes" comment="Changes by 35191">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/SDRCB_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/databases/db1.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file_erro_dia.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file_erro_duracao.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file_erro_hora.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/SDRCB.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SDRCB.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/isec/pd/client/gui/view/PayReservationForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/isec/pd/client/gui/view/PayReservationForm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/isec/pd/client/gui/view/SeatsForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/isec/pd/client/gui/view/SeatsForm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/isec/pd/server/data/database/DBHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/isec/pd/server/data/database/DBHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/isec/pd/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/isec/pd/utils/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/isec/pd/Client/gui/view/ManageShowsForm.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/isec/pd/Client/gui/view/ManageShowsForm.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/isec/pd/Client/gui/view/PayReservationForm.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/isec/pd/Client/gui/view/PayReservationForm.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/isec/pd/Client/gui/view/SeatsForm.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/isec/pd/Client/gui/view/SeatsForm.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/isec/pd/Server/data/database/DBHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/isec/pd/Server/data/database/DBHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/isec/pd/utils/Utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/isec/pd/utils/Utils.class" afterDir="false" />
-    </list>
+    <list default="true" id="cc57de72-392a-4133-a259-d5e3329cc8f8" name="Changes" comment="rmi" />
     <list id="3c5e04a2-b92e-441f-9c04-70d620b0a863" name="Changes by 35191" comment="Changes by 35191" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -44,27 +34,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "TODO_SCOPE": "All Places",
-    "WebServerToolWindowFactoryState": "false",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "last_opened_file_path": "C:/Users/manji/Documents/IdeaProjects/SDRCB/databases",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.37356323"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\manji\Documents\IdeaProjects\SDRCB\databases" />
       <recent name="C:\Users\manji\Documents\IdeaProjects\SDRCB" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Client [localhost 9094]" />
+  <component name="RunManager" selected="Application.Server [9094 db1]" />
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -74,6 +56,7 @@
       <option name="presentableId" value="Default" />
       <updated>1670194547400</updated>
       <workItem from="1670194549847" duration="14391000" />
+      <workItem from="1672338126325" duration="3519000" />
     </task>
     <task id="LOCAL-00001" summary="Changes by 35191">
       <created>1670198096362</created>

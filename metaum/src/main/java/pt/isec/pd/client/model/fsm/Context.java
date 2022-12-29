@@ -1,24 +1,24 @@
 package pt.isec.pd.client.model.fsm;
 
-import javafx.util.Pair;
 import pt.isec.pd.client.model.data.Client;
 import pt.isec.pd.client.model.data.ClientAction;
-import pt.isec.pd.shared_data.Reserve;
-import pt.isec.pd.shared_data.Seat;
-import pt.isec.pd.shared_data.ServerAddress;
-import pt.isec.pd.shared_data.Show;
+import pt.isec.pd.server.rmi.ServerRemoteInterface;
+import pt.isec.pd.shared_data.*;
 
 import java.beans.PropertyChangeSupport;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 
 public class Context {
     Client data;
     IState state;
+    ServerRemoteInterface remoteRef;
 
-    public Context(ServerAddress udpConn,PropertyChangeSupport pcs) {
-        data = new Client(udpConn,pcs);
+    public Context(ServerAddress udpConn, PropertyChangeSupport pcs, ServerRemoteInterface remoteRef) throws RemoteException {
+        data = new Client(udpConn,pcs,remoteRef);
         state = State.LOGIN.createState(this,data);
+        this.remoteRef = remoteRef;
     }
 
     public void changeState(IState state) {

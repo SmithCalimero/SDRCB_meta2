@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.SyncFailedException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -56,14 +57,18 @@ public class ClientReceiveMessage extends Thread {
                 oos = null;
                 if (!(clientData.getAction() == ClientAction.DISCONNECTED)) {
                     clientData.setAction(ClientAction.DISCONNECTED);
-                    request(clientData);
+                    try {
+                        request(clientData);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                 }
                 break;
             }
         }
     }
 
-    public void request(ClientData clientData) {
+    public void request(ClientData clientData) throws RemoteException {
         if (!hbController.isUpdating() && queue.isEmpty()) {
             handleClientRequest(clientData);
         } else {
@@ -124,7 +129,11 @@ public class ClientReceiveMessage extends Thread {
                             TimerTask tt = new TimerTask() {
                                 @Override
                                 public void run() {
-                                    request(submissions.get(0).getSubmit());
+                                    try {
+                                        request(submissions.get(0).getSubmit());
+                                    } catch (RemoteException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             };
 

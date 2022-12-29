@@ -67,7 +67,7 @@ public class HeartBeatController {
         lifeTimeChecker.start();
 
         try {
-            Thread.sleep(Constants.STARTUP * Constants.TO_SECONDS);
+            Thread.sleep(/*Constants.STARTUP * */Constants.TO_SECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -128,7 +128,7 @@ public class HeartBeatController {
     }
 
     public synchronized HeartBeat updateHeartBeat() {
-        hbEvent = new HeartBeat(server.getServerPort(),isAvailable(), server.getDBVersion(), server.getActiveConnections(),server.getIp());
+        hbEvent = new HeartBeat(server.getServerPort(),server.getPortUdp(),isAvailable(), server.getDBVersion(), server.getActiveConnections(),server.getIp());
         return hbEvent;
     }
 

@@ -5,6 +5,9 @@ import pt.isec.pd.client.model.data.Client;
 import pt.isec.pd.client.model.data.ClientAction;
 import pt.isec.pd.client.model.data.ClientData;
 import pt.isec.pd.client.model.fsm.Context;
+import pt.isec.pd.client.rmi.ClientAux;
+import pt.isec.pd.client.rmi.ClientRemoteInterface;
+import pt.isec.pd.server.rmi.ServerRemoteInterface;
 import pt.isec.pd.shared_data.ServerAddress;
 import pt.isec.pd.utils.Constants;
 import pt.isec.pd.utils.Exceptions.NoServerFound;
@@ -16,6 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +31,16 @@ public class CommunicationHandler extends Thread {
     private ObjectInputStream ois;
     private final DatagramSocket ds;
     private ClientData clientData;
+    private ClientAux clientAux;
     private List<ServerAddress> serverList = new ArrayList<>();
     private ResponseHandler responseHandler;
     private PropertyChangeSupport pcs;
     private boolean start = false;
+    private ServerRemoteInterface remoteRef;
 
-    public CommunicationHandler(ServerAddress pingAddr, PropertyChangeSupport pcs) {
+    public CommunicationHandler(ServerAddress pingAddr, PropertyChangeSupport pcs, ServerRemoteInterface remoteRef) throws RemoteException {
         this.pcs = pcs;
+        this.remoteRef = remoteRef;
 
         try {
             ds = new DatagramSocket();
@@ -43,6 +50,7 @@ public class CommunicationHandler extends Thread {
 
         this.pingAddr = pingAddr;
         this.clientData = new ClientData();
+        this.clientAux = new ClientAux(clientData.getId());
     }
 
     @Override
@@ -61,6 +69,9 @@ public class CommunicationHandler extends Thread {
             ds.send(dpSend);
             LOG.log("DatagramPacket sent to the server : "+  pingAddr.getIp() + ":" + pingAddr.getPort());
 
+            // notify through rmi service
+            remoteRef.receiveUdpConnection(clientAux,dpSend.getAddress().toString(),ds.getLocalPort());
+
             DatagramPacket dpReceive = new DatagramPacket(new byte[Constants.MAX_BYTES],Constants.MAX_BYTES);
             ds.receive(dpReceive);
 
@@ -74,7 +85,7 @@ public class CommunicationHandler extends Thread {
             LOG.log("The udp connection was not establish, trying with the list stored");
             try {
                 establishingTcpConn(serverList);
-            } catch (NoServerFound ex) {
+            } catch (NoServerFound | RemoteException ex) {
                 LOG.log("Could not establish connection with any server");
                 LOG.log("Shutting down application");
                 Platform.exit();
@@ -87,10 +98,12 @@ public class CommunicationHandler extends Thread {
         }
     }
 
-    public synchronized void establishingTcpConn(List<ServerAddress> serversAddr) throws NoServerFound {
+    public synchronized void establishingTcpConn(List<ServerAddress> serversAddr) throws NoServerFound, RemoteException {
         for (ServerAddress address : serversAddr) {
             if (tryConnection(address)) {
                 LOG.log("Connected to " + address.getIp() + ":" + address.getPort());
+
+                remoteRef.acceptTcpConnection(clientAux,address.getIp(),address.getPort());
                 return;
             }
         }
@@ -120,6 +133,10 @@ public class CommunicationHandler extends Thread {
 
     public  void writeToSocket(ClientAction action, Object object) {
         try {
+            switch (action) {
+                case LOGIN -> remoteRef.notifyClientLog(clientAux,ClientAction.LOGIN,socket.getInetAddress().getHostAddress(),socket.getPort());
+                case DISCONNECTED -> remoteRef.notifyClientLog(clientAux,ClientAction.DISCONNECTED,socket.getInetAddress().getHostAddress(),socket.getPort());
+            }
             clientData.setAction(action);
             clientData.setData(object);
             oos.reset();

@@ -8,14 +8,16 @@ import java.util.Objects;
 
 public class HeartBeat implements Serializable,Comparable<HeartBeat> {
     private int portTcp;
+    private int portUdp;
     private boolean status;
     private int dbVersion;
     private int activeConnections;
     private String ip;
     private Date timeout;
 
-    public HeartBeat(int portTcp, boolean status, int dbVersion, int activeConnections,String ip) {
+    public HeartBeat(int portTcp, int portUdp,boolean status, int dbVersion, int activeConnections,String ip) {
         this.portTcp = portTcp;
+        this.portUdp = portUdp;
         this.status = status;
         this.dbVersion = dbVersion;
         this.ip = ip;
@@ -36,6 +38,10 @@ public class HeartBeat implements Serializable,Comparable<HeartBeat> {
     public void setPortTcp(int portTcp) {
         this.portTcp = portTcp;
     }
+
+    public int getPortUdp() { return portUdp; }
+
+    public void setPortUdp(int portUdp) { this.portUdp = portUdp; }
 
     public boolean isStatus() {
         return status;
