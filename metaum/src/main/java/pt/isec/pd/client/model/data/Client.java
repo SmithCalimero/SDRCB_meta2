@@ -2,12 +2,9 @@ package pt.isec.pd.client.model.data;
 
 import javafx.util.Pair;
 import pt.isec.pd.client.model.data.threads.CommunicationHandler;
-import pt.isec.pd.client.model.fsm.Context;
-import pt.isec.pd.server.rmi.ServerRemoteInterface;
 import pt.isec.pd.shared_data.*;
 
 import java.beans.PropertyChangeSupport;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,8 +13,8 @@ public class Client extends Thread {
     private final CommunicationHandler ch;
     private String message;
 
-    public Client(ServerAddress pingAddr, PropertyChangeSupport pcs, ServerRemoteInterface remoteRef) throws RemoteException {
-        ch = new CommunicationHandler(pingAddr,pcs, remoteRef);
+    public Client(ServerAddress pingAddr, PropertyChangeSupport pcs) {
+        ch = new CommunicationHandler(pingAddr,pcs);
         ch.start();
     }
 

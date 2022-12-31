@@ -4,15 +4,11 @@ import javafx.util.Pair;
 import pt.isec.pd.client.model.data.ClientAction;
 import pt.isec.pd.client.model.fsm.Context;
 import pt.isec.pd.client.model.fsm.State;
-import pt.isec.pd.server.rmi.ServerRemoteInterface;
-import pt.isec.pd.shared_data.Reserve;
 import pt.isec.pd.shared_data.Seat;
 import pt.isec.pd.shared_data.ServerAddress;
-import pt.isec.pd.shared_data.Show;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,9 +18,9 @@ public class ModelManager {
     Context context;
     PropertyChangeSupport pcs;
 
-    public ModelManager(ServerAddress udpConn, ServerRemoteInterface remoteRef) throws RemoteException {
+    public ModelManager(ServerAddress udpConn) {
         pcs = new PropertyChangeSupport(this);
-        this.context = new Context(udpConn,pcs,remoteRef);
+        this.context = new Context(udpConn,pcs);
 
         notifyMessage();
     }

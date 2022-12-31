@@ -1,3 +1,5 @@
+package rmi;
+
 import rmi.IObservable;
 import rmi.RemoteListener;
 
@@ -9,10 +11,10 @@ import java.util.Scanner;
 public class Listener {
     public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException {
         String registry = "localhost";
-        if (args.length >= 1) registry = args[1];
+        if (args.length >= 1) registry = args[0] + ":" + args[1];
 
         // Lookup the service in the registry, and obtain a remote service
-        String registration = "rmi://" + registry + args[1] + "/SHOW_SERVICE_" + args[1];
+        String registration = "rmi://" + registry + "/SHOW_SERVICE_" + args[1];
         Remote remoteService = Naming.lookup(registration);
         IObservable notifier = (IObservable) remoteService;
 

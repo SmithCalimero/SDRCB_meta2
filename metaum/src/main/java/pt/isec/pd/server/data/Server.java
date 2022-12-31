@@ -59,8 +59,8 @@ public class Server {
         cm = new ClientManagement(pingPort, dbHandler,hbList, hbController,ip);
 
         // Register with service so that clients can find us
-        LocateRegistry.createRegistry(2020);
-        String registry = "localhost" + pingPort;
+        LocateRegistry.createRegistry(pingPort);
+        String registry = ip + ":" + pingPort;
         String registration = "rmi://" + registry + "/SHOW_SERVICE_" + pingPort;
         Naming.rebind(registration, cm);
     }
