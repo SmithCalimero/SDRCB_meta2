@@ -19,10 +19,12 @@ public class ClientPingHandler extends Thread{
     private final Log LOG = Log.getLogger(ClientPingHandler.class);
     private final int port;
     private HeartBeatList hbList;
+    private ClientManagement cm;
 
-    public ClientPingHandler(int port,HeartBeatList hbList) {
+    public ClientPingHandler(int port, HeartBeatList hbList, ClientManagement cm) {
         this.port = port;
         this.hbList = hbList;
+        this.cm = cm;
     }
 
     @Override
@@ -35,11 +37,14 @@ public class ClientPingHandler extends Thread{
                 ds.receive(dp);
                 LOG.log("Ping has been received from " + dp.getAddress().getHostAddress() + ":" + dp.getPort());
 
+                cm.notifyListeners("User " + dp.getAddress().getHostAddress() + ":" + dp.getPort()
+                        + " connected to UDP service successfully");  // notify rmi listeners
+
                 byte[] listBytes = Utils.serializeObject(hbList.getOrderList());
                 dp.setData(listBytes,0,listBytes.length);
                 dp.setLength(listBytes.length);
                 ds.send(dp);
-                LOG.log("The list of servers was sent to the client");
+                LOG.log("The list of servers was sent to the user");
             }
         } catch (IOException e) {
             e.printStackTrace();

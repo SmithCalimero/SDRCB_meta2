@@ -82,7 +82,7 @@ public class ClientReceiveMessage extends Thread {
         try {
             Pair<Object,List<String>> sqlCommands = switch(clientData.getAction()) {
                 case REGISTER -> dbHandler.register(clientData);
-                case LOGIN -> dbHandler.login(clientData);
+                case LOGIN -> dbHandler.login(clientData,clientManagement);
                 case EDIT_NAME,EDIT_USERNAME,EDIT_PASSWORD -> dbHandler.editClientData(clientData);
                 case CONSULT_PAYMENTS_AWAITING -> dbHandler.consultPaymentsAwaiting(clientData);
                 case CONSULT_PAYED_RESERVATIONS -> dbHandler.consultPayedReservations(clientData);
@@ -96,7 +96,7 @@ public class ClientReceiveMessage extends Thread {
                 case PAY_RESERVATION -> dbHandler.payReservation(clientData);
                 case INSERT_SHOWS -> dbHandler.insertShows(clientData);
                 case DELETE_SHOW -> dbHandler.deleteShow(clientData);
-                case DISCONNECTED -> dbHandler.disconnect(clientData);
+                case DISCONNECTED -> dbHandler.disconnect(clientData,clientManagement);
 
                 default -> throw new IllegalArgumentException("Unexpected action value");
             };

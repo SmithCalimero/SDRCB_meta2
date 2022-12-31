@@ -6,19 +6,22 @@ import pt.isec.pd.server.data.Server;
 import pt.isec.pd.server.data.database.DBHandler;
 import pt.isec.pd.shared_data.HeartBeat;
 import pt.isec.pd.utils.Log;
+import rmi.IObservable;
+import rmi.ListenerInterface;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ClientManagement extends Thread {
+public class ClientManagement extends UnicastRemoteObject implements IObservable,Runnable {
     private final Log LOG = Log.getLogger(Server.class);
     private ServerSocket serverSocket;
     private ClientPingHandler pingHandler;
@@ -29,12 +32,13 @@ public class ClientManagement extends Thread {
     private HeartBeatController hbController;
     private List<ClientReceiveMessage> clientsThread = new ArrayList<>();
     private ArrayList<ClientReceiveMessage> viewingSeats = new ArrayList<>();
+    private ArrayList<ListenerInterface> listeners = new ArrayList<>();
 
-    public ClientManagement(int pingPort, DBHandler dataBaseHandler, HeartBeatList hbList, HeartBeatController hbController,String ip) {
+    public ClientManagement(int pingPort, DBHandler dataBaseHandler, HeartBeatList hbList, HeartBeatController hbController,String ip) throws RemoteException {
         try {
             this.hbController = hbController;
             this.serverSocket = new ServerSocket(0);
-            this.pingHandler = new ClientPingHandler(pingPort, hbList);
+            this.pingHandler = new ClientPingHandler(pingPort, hbList, this);
             this.portUdp = pingPort;
             this.dbHandler = dataBaseHandler;
             this.clientsThread = new ArrayList<>();
@@ -53,6 +57,9 @@ public class ClientManagement extends Thread {
                 Socket socket = serverSocket.accept();
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+
+                notifyListeners("User " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort()
+                + " connected to TCP service successfully");  // notify rmi listeners
 
                 //Update db
                 if((Integer) ois.readObject() == 0) {
@@ -100,5 +107,43 @@ public class ClientManagement extends Thread {
 
     public synchronized void subConnection() {
         numConnections--;
+    }
+
+    @Override
+    public String listServers() throws RemoteException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Servers List\n");
+        int index = 1;
+        for (var s : hbController.getHbList().getServerInfoOrderList()) {
+            sb.append(index + ")\t");
+            sb.append("ip: " + s.getIp() + " ");
+            sb.append(",tcpPort: " + s.getPort() + " ");
+            sb.append(",updPort: " + s.getPortUdp() + " ");
+            sb.append(", activeConnections: " + s.getActiveConnections() + " ");
+            sb.append(", lastHeartBit: " + s.getLastHeartBit() + "\n");
+            index++;
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public void addListener(ListenerInterface listener) throws RemoteException {
+        LOG.log("Adding listener - " + listener);
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(ListenerInterface listener) throws RemoteException {
+        LOG.log("Removing listener - " + listener);
+        listeners.remove(listener);
+    }
+
+    public void notifyListeners(String description) throws RemoteException {
+        for (var listener : listeners)
+            try {
+                listener.notify(description);
+            } catch (RemoteException e) {
+                listeners.remove(listener);
+            }
     }
 }

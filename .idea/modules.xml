@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/metaum/PD-Meta1.iml" filepath="$PROJECT_DIR$/metaum/PD-Meta1.iml" />
       <module fileurl="file://$PROJECT_DIR$/rest/PD-REST-API.iml" filepath="$PROJECT_DIR$/rest/PD-REST-API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rmi/RMI.iml" filepath="$PROJECT_DIR$/rmi/RMI.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/SDRCB_meta2.iml" filepath="$PROJECT_DIR$/.idea/SDRCB_meta2.iml" />
     </modules>
   </component>

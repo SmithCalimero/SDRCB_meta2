@@ -8,16 +8,19 @@
         <outputRelativeToContentRoot value="true" />
         <module name="PD-REST-API" />
         <module name="PD-Meta1" />
+        <module name="RMI" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="PD-Meta1" target="17" />
       <module name="PD-REST-API" target="17" />
+      <module name="RMI" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="PD-REST-API" options="-parameters" />
+      <module name="RMI" options="-parameters" />
     </option>
   </component>
 </project>

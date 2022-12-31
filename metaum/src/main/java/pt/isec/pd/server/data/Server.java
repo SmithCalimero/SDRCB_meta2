@@ -1,23 +1,21 @@
 package pt.isec.pd.server.data;
 
-import pt.isec.pd.client.model.data.ClientAction;
-import pt.isec.pd.client.rmi.ClientRemoteInterface;
 import pt.isec.pd.server.data.database.CreateDataBase;
 import pt.isec.pd.server.data.database.DBHandler;
-import pt.isec.pd.server.rmi.ServerRemoteInterface;
 import pt.isec.pd.server.threads.client.ClientManagement;
 import pt.isec.pd.server.threads.client.ClientReceiveMessage;
 import pt.isec.pd.utils.Log;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.sql.SQLException;
+import java.rmi.registry.LocateRegistry;
 import java.util.List;
 
-public class Server extends UnicastRemoteObject implements ServerRemoteInterface {
+public class Server {
     private final Log LOG = Log.getLogger(Server.class);
     private HeartBeatList hbList;
     private String ip;
@@ -27,7 +25,7 @@ public class Server extends UnicastRemoteObject implements ServerRemoteInterface
     private DBHandler dbHandler;
     private Scanf scanf;
 
-    public Server(int pingPort,String dbPath) throws RemoteException {
+    public Server(int pingPort,String dbPath) throws RemoteException, MalformedURLException {
         this.dbPath = dbPath;
         scanf = new Scanf();
         scanf.start();
@@ -46,7 +44,7 @@ public class Server extends UnicastRemoteObject implements ServerRemoteInterface
         return ip;
     }
 
-    public void init(int pingPort) {
+    public void init(int pingPort) throws RemoteException, MalformedURLException {
         hbList = new HeartBeatList();
 
         File f = new File(dbPath);
@@ -59,13 +57,19 @@ public class Server extends UnicastRemoteObject implements ServerRemoteInterface
 
         hbController = new HeartBeatController(hbList,this);
         cm = new ClientManagement(pingPort, dbHandler,hbList, hbController,ip);
+
+        // Register with service so that clients can find us
+        LocateRegistry.createRegistry(2020);
+        String registry = "localhost" + pingPort;
+        String registration = "rmi://" + registry + "/SHOW_SERVICE_" + pingPort;
+        Naming.rebind(registration, cm);
     }
 
     public void start() {
         hbController.start();
 
         cm.startPingHandler();
-        cm.start();
+        cm.run();
     }
 
     public int getServerPort() {
@@ -88,32 +92,5 @@ public class Server extends UnicastRemoteObject implements ServerRemoteInterface
 
     public synchronized List<ClientReceiveMessage> getClients() {
         return cm.getClientsThread();
-    }
-
-    @Override
-    public void receiveUdpConnection(ClientRemoteInterface clientReference, String ip, int port) throws RemoteException {
-        LOG.log("[RMI] Client " + ip + ":" + port + " sent UDP datagram packets");
-
-        // retrieve list of active servers
-        clientReference.listActiveServers(hbList.getServerInfoOrderList());
-    }
-
-    @Override
-    public void acceptTcpConnection(ClientRemoteInterface clientReference, String ip, int port) throws RemoteException {
-        LOG.log("[RMI] TCP connection of client on " + ip + ":" + port + " has been accepted");
-    }
-
-    @Override
-    public void notifyTcpDisconnection(ClientRemoteInterface clientReference, String ip, int port) throws RemoteException {
-        LOG.log("[RMI] Client on " + ip + ":" + port + " has lost his TCP connection");
-    }
-
-    @Override
-    public void notifyClientLog(ClientRemoteInterface clientReference, ClientAction action, String ip, int port) throws RemoteException {
-        switch (action) {
-            case LOGIN -> LOG.log("[RMI] Client " + ip + ":" + port + " logged in");
-            case DISCONNECTED -> LOG.log("Client " + ip + ":" + port + " logged out");
-            default -> LOG.log("RMI client login/logout notification error");
-        }
     }
 }

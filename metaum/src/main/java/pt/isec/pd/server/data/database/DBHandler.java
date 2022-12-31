@@ -3,6 +3,7 @@ package pt.isec.pd.server.data.database;
 import javafx.util.Pair;
 import pt.isec.pd.client.model.data.ClientAction;
 import pt.isec.pd.client.model.data.ClientData;
+import pt.isec.pd.server.threads.client.ClientManagement;
 import pt.isec.pd.shared_data.*;
 import pt.isec.pd.shared_data.Responses.*;
 import pt.isec.pd.utils.Log;
@@ -195,7 +196,7 @@ public class DBHandler {
         return new Pair<>(response,listQuery);
     }
 
-    public synchronized Pair<Object,List<String>> login(ClientData clientData) throws IOException {
+    public synchronized Pair<Object,List<String>> login(ClientData clientData, ClientManagement clientManagement) throws IOException {
         boolean requestAccepted = false;
         int isAuthenticated = 0;
         boolean isAdmin = false;
@@ -242,6 +243,7 @@ public class DBHandler {
 
                     msg = "User[" + loginData.getKey() + "]  logged in successfully";
                     LOG.log(msg);
+                    clientManagement.notifyListeners(msg);  // notify rmi listeners
                     listQuery.add(query);
                     response.setMsg(msg);
                     response.setSuccess(true);
@@ -256,9 +258,11 @@ public class DBHandler {
                 if (isAuthenticated == 0) {
                     msg = "The username " + loginData.getKey() + " or password are incorrect";
                     LOG.log(msg);
+                    clientManagement.notifyListeners(msg);  // notify rmi listeners
                 } else {
                     msg = "This user " + loginData.getKey() + " is already authenticated";
                     LOG.log(msg);
+                    clientManagement.notifyListeners(msg);  // notify rmi listeners
                 }
 
                 response.setMsg(msg);
@@ -1226,7 +1230,7 @@ public class DBHandler {
         return new Pair<>(response,listQuery);
     }
 
-    public synchronized Pair<Object,List<String>> disconnect(ClientData clientData) throws SQLException, IOException, ClassNotFoundException {
+    public synchronized Pair<Object,List<String>> disconnect(ClientData clientData, ClientManagement clientManagement) throws SQLException, IOException, ClassNotFoundException {
         String query;
         List<String> listQuery = new ArrayList<>();
         DisconnectResponse response = new DisconnectResponse();
@@ -1251,7 +1255,9 @@ public class DBHandler {
 
                     listQuery.add(query);
 
-                    LOG.log("User[" + username + "] logged out successfully");
+                    String message = "User[" + username + "] logged out successfully";
+                    LOG.log(message);
+                    clientManagement.notifyListeners(message);  // notify rmi listeners
 
                     statement.close();
                     result.close();
