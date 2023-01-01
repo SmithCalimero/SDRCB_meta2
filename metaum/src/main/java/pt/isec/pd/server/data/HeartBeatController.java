@@ -67,7 +67,7 @@ public class HeartBeatController {
         lifeTimeChecker.start();
 
         try {
-            Thread.sleep(/*Constants.STARTUP * */ Constants.TO_SECONDS);
+            Thread.sleep(Constants.STARTUP * Constants.TO_SECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
