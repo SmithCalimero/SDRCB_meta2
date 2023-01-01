@@ -28,6 +28,7 @@ public class ClientReceiveMessage extends Thread {
     private final List<ClientData> queue = new ArrayList<>();
     private final QueueUpdate queueUpdate;
     private Timer t = new Timer();
+    private boolean isAuthenticated = false;
     
     private List<Submission> submissions = new ArrayList<>();
     private ClientData clientData;
@@ -59,13 +60,21 @@ public class ClientReceiveMessage extends Thread {
                 clientManagement.getClientsThread().remove(this);
                 oos = null;
                 try {
-                    clientManagement.notifyListeners(
-                            "Connection lost with client " + socket.getInetAddress().getHostAddress() + ":" +
-                                    socket.getPort());
+                    if (isAuthenticated) {
+                        clientManagement.notifyListeners(
+                                "Connection lost with user [" + dbHandler.getUserName(clientData.getId()) + "] with adress-> " + socket.getInetAddress().getHostAddress() + ":" +
+                                        socket.getPort());
+                    } else {
+                        clientManagement.notifyListeners(
+                                "Connection lost with non-authenticated client " + socket.getInetAddress().getHostAddress() + ":" +
+                                        socket.getPort());
+                    }
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
                 }
+
                 if (clientData != null && !(clientData.getAction() == ClientAction.DISCONNECTED)) {
+                    clientData.setAction(ClientAction.DISCONNECTED);
                     try {
                         request(clientData);
                     } catch (RemoteException ex) {
@@ -91,7 +100,13 @@ public class ClientReceiveMessage extends Thread {
         try {
             Pair<Object,List<String>> sqlCommands = switch(clientData.getAction()) {
                 case REGISTER -> dbHandler.register(clientData);
-                case LOGIN -> dbHandler.login(clientData,clientManagement);
+                case LOGIN -> {
+                    var commands = dbHandler.login(clientData,clientManagement);
+                    if(!commands.getValue().isEmpty()) {
+                        isAuthenticated = true;
+                    }
+                    yield commands;
+                }
                 case EDIT_NAME,EDIT_USERNAME,EDIT_PASSWORD -> dbHandler.editClientData(clientData);
                 case CONSULT_PAYMENTS_AWAITING -> dbHandler.consultPaymentsAwaiting(clientData);
                 case CONSULT_PAYED_RESERVATIONS -> dbHandler.consultPayedReservations(clientData);

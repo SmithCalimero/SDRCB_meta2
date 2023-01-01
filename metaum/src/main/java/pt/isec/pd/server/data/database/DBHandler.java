@@ -1282,4 +1282,19 @@ public class DBHandler {
             LOG.log("Error updating database " + e);
         }
     }
+
+    public String getUserName(int id) {
+        try {
+            // Create statement
+            Statement statement = connection.createStatement();
+            // Execute a query to get the clients data
+            ResultSet result = statement.executeQuery(
+                    "SELECT username FROM utilizador where id=" + id
+            );
+            return result.getString("username");
+        } catch(SQLException e) {
+            LOG.log( "Unable to get data from the database");
+        }
+        return "";
+    }
 }
