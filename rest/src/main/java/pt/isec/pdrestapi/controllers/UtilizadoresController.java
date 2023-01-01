@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import pt.isec.pdrestapi.models.Espetaculo;
+import pt.isec.pdrestapi.models.Reserva;
 import pt.isec.pdrestapi.models.Utilizador;
 
 import java.security.Principal;
@@ -115,7 +116,7 @@ public class UtilizadoresController {
                 ));
 
         if (admin.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Para executar esta ação tem de ser um admin");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Para executar esta ação tem de ser um admin");
         }
 
         List<Utilizador> removeUser = jdbcTemplate.query(("SELECT * FROM utilizador WHERE id='" + id + "'"),
@@ -129,8 +130,21 @@ public class UtilizadoresController {
                 ));
 
         if (removeUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("O utilizador com esse id não existe\n" +
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O utilizador com esse id não existe\n" +
                     "Use /utilizadores para ver os utilizador que quer remover");
+        }
+
+        List<Reserva> reservas = jdbcTemplate.query(("SELECT * FROM reserva WHERE id_utilizador='" + id + "'"),
+                (resultSet, rowNum) -> new Reserva(
+                        resultSet.getInt("id"),
+                        resultSet.getString("data_hora"),
+                        resultSet.getInt("pago"),
+                        resultSet.getInt("id_utilizador"),
+                        resultSet.getInt("id_espetaculo")
+                ));
+
+        if (!reservas.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O utilizador com esse id tem reservas associdas\n" + reservas);
         }
 
         jdbcTemplate.execute("DELETE FROM utilizador" +

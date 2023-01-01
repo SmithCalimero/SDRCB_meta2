@@ -65,9 +65,9 @@ public class Application
         @Bean
         public SecurityFilterChain genericFilterChain(HttpSecurity http) throws Exception
         {
-            return http
+            return   http
                     .csrf(csrf -> csrf.disable())
-                    .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                    .authorizeHttpRequests(auth -> auth.requestMatchers("/espetaculos**").permitAll().anyRequest().authenticated())
                     .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .build();

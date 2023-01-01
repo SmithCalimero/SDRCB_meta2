@@ -5,15 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import pt.isec.pdrestapi.models.Espetaculo;
-import pt.isec.pdrestapi.models.LangConfig;
-import pt.isec.pdrestapi.models.Utilizador;
-
-import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
-
-//Principal class para ver qual o utilizador autenticado
 
 @RestController
 @RequestMapping("espetaculos")
