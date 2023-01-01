@@ -58,12 +58,15 @@ public class ClientReceiveMessage extends Thread {
                 clientManagement.subConnection();
                 clientManagement.getClientsThread().remove(this);
                 oos = null;
-                if (!(clientData.getAction() == ClientAction.DISCONNECTED)) {
-                    clientData.setAction(ClientAction.DISCONNECTED);
+                try {
+                    clientManagement.notifyListeners(
+                            "Connection lost with client " + socket.getInetAddress().getHostAddress() + ":" +
+                                    socket.getPort());
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+                if (clientData != null && !(clientData.getAction() == ClientAction.DISCONNECTED)) {
                     try {
-                        clientManagement.notifyListeners(
-                                "Connection lost with client " + socket.getInetAddress().getHostName() + ":" +
-                                socket.getPort());
                         request(clientData);
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
