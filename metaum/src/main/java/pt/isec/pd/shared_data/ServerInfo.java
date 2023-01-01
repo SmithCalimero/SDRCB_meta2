@@ -3,9 +3,9 @@ package pt.isec.pd.shared_data;
 public class ServerInfo extends ServerAddress {
     private int portUdp;
     private int activeConnections;
-    private long lastHeartBit;
+    private String lastHeartBit;
 
-    public ServerInfo(String ip, int port, int portUdp, int activeConnections, long lastHeartBit) {
+    public ServerInfo(String ip, int port, int portUdp, int activeConnections, String lastHeartBit) {
         super(ip, port);
         this.portUdp = portUdp;
         this.activeConnections = activeConnections;
@@ -20,7 +20,7 @@ public class ServerInfo extends ServerAddress {
 
     public void setActiveConnections(int activeConnections) { this.activeConnections = activeConnections; }
 
-    public long getLastHeartBit() { return lastHeartBit; }
+    public String getLastHeartBit() { return lastHeartBit; }
 
-    public void setLastHeartBit(long lastHeartBit) { this.lastHeartBit = lastHeartBit; }
+    public void setLastHeartBit(String lastHeartBit) { this.lastHeartBit = lastHeartBit; }
 }

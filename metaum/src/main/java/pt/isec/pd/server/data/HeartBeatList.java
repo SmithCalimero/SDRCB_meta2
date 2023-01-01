@@ -3,7 +3,9 @@ package pt.isec.pd.server.data;
 import pt.isec.pd.shared_data.HeartBeat;
 import pt.isec.pd.shared_data.ServerAddress;
 import pt.isec.pd.shared_data.ServerInfo;
+import pt.isec.pd.utils.Constants;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class HeartBeatList extends LinkedList<HeartBeat>{
@@ -41,9 +43,18 @@ public class HeartBeatList extends LinkedList<HeartBeat>{
         Collections.sort(orderList);
 
         for (HeartBeat event : orderList) {
-            Date date = new Date();
-            long secs = date.getTime()/1000 - event.getTimeout().getTime()/1000;
-            servers.add(new ServerInfo(event.getIp(),event.getPortTcp(),event.getPortUdp(),event.getActiveConnections(),secs));
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(event.getTimeout());
+            calendar.add(Calendar.SECOND,-Constants.TIMESTAMP);
+            String strFormat =  new SimpleDateFormat("HH:mm:ss").format(calendar.getTime());
+
+            servers.add(new ServerInfo(
+                    event.getIp(),
+                    event.getPortTcp(),
+                    event.getPortUdp(),
+                    event.getActiveConnections(),
+                    strFormat)
+            );
         }
 
         return servers;
