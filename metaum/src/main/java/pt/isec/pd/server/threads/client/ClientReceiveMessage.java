@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.SyncFailedException;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.*;
@@ -30,8 +31,10 @@ public class ClientReceiveMessage extends Thread {
     
     private List<Submission> submissions = new ArrayList<>();
     private ClientData clientData;
+    private Socket socket;
 
-    public ClientReceiveMessage(ObjectOutputStream oos, ObjectInputStream ois, DBHandler dbHandler, ClientManagement clientManagement, HeartBeatController controller) {
+    public ClientReceiveMessage(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, DBHandler dbHandler, ClientManagement clientManagement, HeartBeatController controller) {
+        this.socket = socket;
         this.oos = oos;
         this.ois = ois;
         this.hbController = controller;
@@ -58,6 +61,9 @@ public class ClientReceiveMessage extends Thread {
                 if (!(clientData.getAction() == ClientAction.DISCONNECTED)) {
                     clientData.setAction(ClientAction.DISCONNECTED);
                     try {
+                        clientManagement.notifyListeners(
+                                "Connection lost with client " + socket.getInetAddress().getHostName() + ":" +
+                                socket.getPort());
                         request(clientData);
                     } catch (RemoteException ex) {
                         ex.printStackTrace();

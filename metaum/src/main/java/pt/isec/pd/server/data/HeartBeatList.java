@@ -12,6 +12,7 @@ public class HeartBeatList extends LinkedList<HeartBeat>{
     public synchronized boolean updateList(HeartBeat element) {
         // if returns true the heartbeat was changed or added
         element.addTimeStamp(new Date());
+        element.setLastHeartbit(new Date());
 
         int index = indexOf(element);
         if (index == -1) {
@@ -43,17 +44,14 @@ public class HeartBeatList extends LinkedList<HeartBeat>{
         Collections.sort(orderList);
 
         for (HeartBeat event : orderList) {
-            Calendar calendar=Calendar.getInstance();
-            calendar.setTime(event.getTimeout());
-            calendar.add(Calendar.SECOND,-Constants.TIMESTAMP);
-            String strFormat =  new SimpleDateFormat("HH:mm:ss").format(calendar.getTime());
-
+            Date now = new Date();
+            int seconds = (int) (now.getTime() - event.getLastHeartbit().getTime())/1000;
             servers.add(new ServerInfo(
                     event.getIp(),
                     event.getPortTcp(),
                     event.getPortUdp(),
                     event.getActiveConnections(),
-                    strFormat)
+                    seconds + "s ago")
             );
         }
 

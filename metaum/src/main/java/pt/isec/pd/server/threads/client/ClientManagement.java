@@ -71,7 +71,7 @@ public class ClientManagement extends UnicastRemoteObject implements IObservable
                     LOG.log("New connection established: " + numConnections);
 
                     // Creates a thread for that client
-                    ClientReceiveMessage clientRM = new ClientReceiveMessage(oos,ois, dbHandler, this,hbController);
+                    ClientReceiveMessage clientRM = new ClientReceiveMessage(socket,oos,ois, dbHandler, this,hbController);
                     clientRM.start();
 
                     hbController.sendHeartBeat();

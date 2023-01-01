@@ -14,6 +14,7 @@ public class HeartBeat implements Serializable,Comparable<HeartBeat> {
     private int activeConnections;
     private String ip;
     private Date timeout;
+    private Date lastHeartbit;
 
     public HeartBeat(int portTcp, int portUdp,boolean status, int dbVersion, int activeConnections,String ip) {
         this.portTcp = portTcp;
@@ -105,4 +106,8 @@ public class HeartBeat implements Serializable,Comparable<HeartBeat> {
     public String toString() {
         return  "tcp port: " + portTcp + " activeConnection: " + activeConnections +  " dbVersion: " + dbVersion +"\n";
     }
+
+    public void setLastHeartbit(Date lastHeartbit) { this.lastHeartbit = lastHeartbit; }
+
+    public Date getLastHeartbit() { return this.lastHeartbit; }
 }
